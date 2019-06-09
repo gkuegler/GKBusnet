@@ -1,0 +1,1 @@
+pyinstaller ui_main.py --onefile --noconsole
