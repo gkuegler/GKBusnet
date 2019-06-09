@@ -1,7 +1,9 @@
 # Busnet
 datalogger/scada window application implemented in python
 
-Steps to Running Through Python Interpreter:
+
+
+Steps to Running Through Python Interpreter on Windows:
 1. Install Python3.7 or above
 2. Run pip_requirements\install_dep_modules.bat
 3. Run '___run_myui_with_python.bat' to launch program
