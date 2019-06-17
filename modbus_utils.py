@@ -4,6 +4,16 @@
 
 import struct
 
+def pack_frame():
+    hd_trans_id = None
+    hd_proto_id = None
+    hd_mbus_body_len = None
+    hd_unit_id = None
+    bd_func_code = None
+    bd_data = None
+    header = (h_trans_id, hd_proto_id, hd_mbus_body_len, hd_unit_id)
+    mbus_header = struct.pack('>HHHB', header)
+    mbus_body = ''
 
 ###############
 # bits function

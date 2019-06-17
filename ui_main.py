@@ -26,7 +26,7 @@ debug = True
 demo = True
 demodata = [1,2,3,4]
 header = ['Time', 'pH', 'Temp', 'Dev 0 Stat', 'Dev 1 Stat']
-refresh_delay = 1.5 #Seconds
+refresh_delay = 2 #Seconds
 logfile = 'datafiles/mydata.csv'
 is_start = True
 is_running = False
@@ -55,8 +55,8 @@ def toggle_log():
 def set_all_data():
     window.ui.devtree.topLevelItem(0).setText(1, dlt.dev[0].status)
     window.ui.lcd_ph.display(dlt.dev[0].reg1)
-    window.ui.devtree.topLevelItem(1).setText(1, dlt.dev[1].status)
-    window.ui.lcd_temp.display(dlt.dev[1].reg1)
+    #window.ui.devtree.topLevelItem(1).setText(1, dlt.dev[1].status)
+    #window.ui.lcd_temp.display(dlt.dev[1].reg1)
 
 def supervise(): pass
 
@@ -64,7 +64,7 @@ def controlloop():
     if demo: time.sleep(2)
     global is_start
     while is_start:
-        logger.log([dlt.dev[0].reg1, dlt.dev[1].reg1, dlt.dev[0].status, dlt.dev[1].status])
+        #logger.log([dlt.dev[0].reg1, dlt.dev[1].reg1, dlt.dev[0].status, dlt.dev[1].status])
         set_all_data()
         supervise()
         time.sleep(refresh_delay)
@@ -104,6 +104,11 @@ class MainWindow(QMainWindow):
         QtCore.QObject.connect(self.ui.pushButton_stop, QtCore.SIGNAL("clicked()"), stop)
         QtCore.QObject.connect(self.ui.lineEdit_logfilename, QtCore.SIGNAL("textEdited(QString)"), change_logfile)
         QtCore.QObject.connect(self.ui.checkBox_logdata, QtCore.SIGNAL("stateChanged(int)"), toggle_log)
+
+        #generate device tree
+        for i,x in enumerate(dlt.dev):
+            self.ui.devtree.topLevelItem(i).setText(0, QtWidgets.QApplication.translate("MainWindow", dlt.dev[i].name, None, -1))
+            self.ui.devtree.topLevelItem(i).setText(1, QtWidgets.QApplication.translate("MainWindow", dlt.dev[i].status, None, -1))
 
 
 

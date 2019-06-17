@@ -4,12 +4,12 @@ import time
 import random
 import threading as th
 
-default_reg_vals = [None,None,None]
+default_reg_vals = [44,None,None]
 class timeoutexcept(Exception): pass
 
 class Device(client.ModbusClient):
     
-    def __init__(self, name, host=None, port=None, debug=False, pollfreq=1, reg1=None, reg2=None, reg3=None):
+    def __init__(self, name, host=None, port=None, debug=False, pollfreq=3, reg1=None, reg2=None, reg3=None):
         super(Device, self).__init__(host=host, port=port)
         self.name = name
         self.pollfreq = pollfreq
@@ -32,18 +32,10 @@ class Device(client.ModbusClient):
         self._can_update = False
 
     def _get_device_data(self):
-        #future put modbus command to load into register
-        #(ex. reg1 = read_register(addr, bit))
         while self._can_update:
-            if self.debug: print('{}._get_device_data'.format(self.name))
-            try:
-                if self._testfail==True:
-                    time.sleep(self.timeout)
-                    raise timeoutexcept
-                self.reg1 += random.randint(-9,+9)/100
-                self.status = 'Connected'
-                time.sleep(self.pollfreq)
-            except timeoutexcept:
-                self._can_update = False
-                self.reg1 = "err"
-                self.status = "Connection Failed"
+            result = self.read_coils(4001)
+            print(result)
+            result = 11 if result else 00
+            self.reg1 = result
+            time.sleep(self.pollfreq)
+            self._get_device_data()       

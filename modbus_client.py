@@ -48,12 +48,11 @@ class ModbusClient:
         self.__unit_id = 1
         self.__timeout = 30.0                # socket timeout
         self.__debug = False                 # debug trace on/off
-        self.__auto_open = False             # auto TCP connect
+        self.__auto_open = True             # auto TCP connect
         self.__auto_close = True            # auto TCP close
         self.__mode = const.MODBUS_TCP       # default is Modbus/TCP
         self.__sock = None                   # socket handle
         self.__hd_tr_id = 0                  # store transaction ID
-        self.__version = const.VERSION       # version number
         self.__last_error = const.MB_NO_ERR  # last error code
         self.__last_except = 0               # last expect code
         # set host
@@ -86,14 +85,6 @@ class ModbusClient:
         if auto_close:
             if not self.auto_close(auto_close):
                 raise ValueError('auto_close value error')
-
-    def version(self):
-        """Get package version
-
-        :return: current version of the package (like "0.0.1")
-        :rtype: str
-        """
-        return self.__version
 
     def last_error(self):
         """Get last error code
@@ -248,20 +239,19 @@ class ModbusClient:
             self.close()
         # init socket and connect
         # list available sockets on the target host/port
-        # AF_xxx : AF_INET -> IPv4, AF_INET6 -> IPv6,
-        #          AF_UNSPEC -> IPv6 (priority on some system) or 4
         # list available socket on target host
-        for res in socket.getaddrinfo(self.__hostname, self.__port,
-                                      socket.AF_UNSPEC, socket.SOCK_STREAM):
+        for res in socket.getaddrinfo(self.__hostname, self.__port, socket.AF_INET, socket.SOCK_STREAM):
             af, sock_type, proto, canon_name, sa = res
             try:
                 self.__sock = socket.socket(af, sock_type, proto)
+                print('socket created to send')
             except socket.error:
                 self.__sock = None
                 continue
             try:
                 self.__sock.settimeout(self.__timeout)
                 self.__sock.connect(sa)
+                print('socket connected')
             except socket.error:
                 self.__sock.close()
                 self.__sock = None
@@ -985,20 +975,9 @@ class ModbusClient:
 
 if __name__ == "__main__":
 
-    def cmdlist():
-        print('\nr      retry')
 
-        x = input('Command: ')
-        
-        if x=='r': starttestserver()
-
-    def starttestserver():
-        testclient = ModbusClient(host='localhost', port=62500)
-        print('\nHost: {}'.format(testclient.host()))
-        print('Port: {}'.format(testclient.port()))
-        #th.Timer(5, function=testserver.stop).start()
-        #testclient.ECHO()
-        #cmdlist()
-        print(testclient.write_single_coil(1,1))
-
-    starttestserver()
+    c = ModbusClient(host='localhost', port=63349)
+    print('\nHost: {}'.format(c.host()))
+    print('Port: {}'.format(c.port()))
+    print(c.write_single_coil(4001, True))
+    print(c.read_discrete_inputs(4001))

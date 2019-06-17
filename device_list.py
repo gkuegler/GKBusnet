@@ -5,10 +5,13 @@ mode_debug = False
 dev = list()
 
 # Initialize These Devices
-dev.append(devlib.Device(name='pH Meter', host='127.0.0.1', port=62500, reg1='pH', debug=mode_debug))
-dev[0].reg1 = 7.00
-dev.append(devlib.Device(name='Temp Probe', host='127.0.0.1', port=62300, reg1='temp degF', debug=mode_debug))
-dev[1]._testfail=True
+#dev.append(devlib.Device(name='pH Meter', host='127.0.0.1', port=62500, reg1='pH', debug=mode_debug))
+#dev[0].reg1 = 7.00
+#dev.append(devlib.Device(name='Temp Probe', host='127.0.0.1', port=62300, reg1='temp degF', debug=mode_debug))
+#dev[1].reg1 = 72
+dev.append(devlib.Device('dev1', host='localhost', port='63634'))
+
+
 
 def start_all_device_data():
     for i,x in enumerate(dev):
